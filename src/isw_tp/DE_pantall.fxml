@@ -1,11 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1">
-    
+<AnchorPane id="AnchorPane" prefHeight="900.0" prefWidth="1128.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TableView fx:id="tbPedidos" layoutX="229.0" layoutY="46.0" prefHeight="200.0" prefWidth="671.0">
+        <columns>
+          <TableColumn prefWidth="419.0" text="Articulo" />
+          <TableColumn minWidth="0.0" prefWidth="106.0" text="Cantidad" />
+            <TableColumn prefWidth="145.0" text="Subtotal" />
+        </columns>
+      </TableView>
+      <Label layoutX="202.0" layoutY="471.0" text="Fecha de entrega:">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <Label layoutX="637.0" layoutY="469.0" prefHeight="29.0" prefWidth="174.0" text="Hora de entrega:">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <DatePicker fx:id="fechaEntrega" layoutX="426.0" layoutY="470.0" prefHeight="26.0" prefWidth="151.0" />
+      <ComboBox fx:id="horaEntrega" layoutX="830.0" layoutY="470.0" prefHeight="26.0" prefWidth="174.0" promptText="Lo antes posible" />
+      <CheckBox fx:id="chkEfectivo" layoutX="223.0" layoutY="565.0" mnemonicParsing="false" onAction="#changeState" text="Efectivo" />
+      <CheckBox fx:id="chkTarjeta" layoutX="356.0" layoutY="565.0" mnemonicParsing="false" onAction="#changeState" text="Tarjeta" />
+      <Label layoutX="202.0" layoutY="522.0" text="Medio de pago">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <Pane fx:id="pane_efectivo" focusTraversable="true" layoutX="174.0" layoutY="583.0" prefHeight="65.0" prefWidth="770.0">
+         <children>
+            <Label layoutX="482.0" layoutY="26.0" text="Su vuelto:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtEfectivoCantidad" layoutX="273.0" layoutY="23.0" />
+            <Label layoutX="30.0" layoutY="23.0" text="Ingrese con cuánto pagará:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Pane layoutX="174.0" layoutY="638.0" prefHeight="200.0" prefWidth="822.0">
+         <children>
+            <Label layoutX="27.0" layoutY="17.0" text="Nombre impreso en la tarjeta:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtTitularTarjeta" layoutX="279.0" layoutY="14.0" />
+            <Label layoutX="27.0" layoutY="63.0" text="Número de tarjeta:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtNroTarjeta" layoutX="194.0" layoutY="60.0" prefHeight="26.0" prefWidth="255.0" />
+            <Label layoutX="27.0" layoutY="103.0" text="Fecha de vencimiento (MM/AAAA):">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label layoutX="27.0" layoutY="145.0" text="Código de seguridad de la tarjeta:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtCodTarjeta" layoutX="307.0" layoutY="142.0" prefHeight="26.0" prefWidth="141.0" />
+            <TextField fx:id="txtVencimientoTarjeta" layoutX="323.0" layoutY="100.0" prefHeight="26.0" prefWidth="109.0" />
+         </children>
+      </Pane>
+      <Pane layoutX="174.0" layoutY="271.0" prefHeight="186.0" prefWidth="770.0">
+         <children>
+            <Label layoutX="76.0" layoutY="14.0" text="Direccion de entrega:">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtCalle" layoutX="93.0" layoutY="59.0" prefHeight="26.0" prefWidth="273.0" />
+            <Label layoutX="30.0" layoutY="62.0" text="Calle:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label layoutX="394.0" layoutY="62.0" text="Número:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtCalleNro" layoutX="483.0" layoutY="59.0" prefHeight="26.0" prefWidth="141.0" />
+            <Label layoutX="30.0" layoutY="105.0" text="Piso (opcional):">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtPiso" layoutX="168.0" layoutY="102.0" prefHeight="24.0" prefWidth="123.0" />
+            <Label layoutX="311.0" layoutY="105.0" text="Depto (opcional):">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtDepto" layoutX="463.0" layoutY="102.0" prefHeight="24.0" prefWidth="123.0" />
+         </children>
+      </Pane>
+      <Button fx:id="btnConfirmar" layoutX="327.0" layoutY="838.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="289.0" text="Confirmar" />
+      <Button fx:id="btnCancelar" layoutX="633.0" layoutY="838.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="91.0" text="Cancelar" />
+   </children>
 </AnchorPane>
