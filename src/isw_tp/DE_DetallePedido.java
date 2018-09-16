@@ -13,10 +13,12 @@ public class DE_DetallePedido {
     
     private DE_Articulo articulo;
     private int cantidad;
+    private float subtotal;
 
     public DE_DetallePedido(DE_Articulo articulo, int cantidad) {
         this.articulo = articulo;
         this.cantidad = cantidad;
+        this.subtotal = this.articulo.getPrecio() * this.cantidad;
     }
 
     public DE_DetallePedido() {
@@ -36,6 +38,14 @@ public class DE_DetallePedido {
 
     public int getCantidad() {
         return cantidad;
+    }
+
+    public float getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(float subtotal) {
+        this.subtotal = subtotal;
     }
     
     

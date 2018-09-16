@@ -38,6 +38,9 @@ public class DE_Articulo {
         this.precio = precio;
     }
     
-    
+    @Override
+    public String toString(){
+        return this.nombre;
+    }
     
 }
