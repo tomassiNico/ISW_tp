@@ -1,0 +1,21 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 17/09/2018, 18:38:37
+    Author     : aleex
+*/
+#btnConfirmar {
+    -fx-background-color: #03a9f4;
+    -fx-border-color: rgb(216, 216, 216);
+}
+#btnCancelar {
+    -fx-background-color: #fa5573;
+    -fx-border-color: rgb(216, 216, 216);
+}
+
+#paneEfectivo #paneTarjeta{
+    -fx-border-color: black;
+}

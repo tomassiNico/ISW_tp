@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -92,11 +93,11 @@ public class DE_pantallController implements Initializable {
     @FXML
     private ComboBox<String> cmbHoraEntrega;
     @FXML
-    private Label FechaHoraActual;
-    @FXML
     private Label lblTotal;
     @FXML
     private Label lblVuelto;
+    @FXML
+    private Label fechaHoraActual;
 
     /**
      * Initializes the controller class.
@@ -142,7 +143,8 @@ public class DE_pantallController implements Initializable {
             total += detallesPedidos.get(i).getSubtotal();
         }
         lblTotal.setText("Total: " + total + "$");
-        
+        fechaHoraActual.setText(fechaHoraActual.getText().toString() + LocalDate.now().toString());
+        fechaEntrega.setValue(LocalDate.now());
     }    
 
     
@@ -188,17 +190,45 @@ public class DE_pantallController implements Initializable {
             validación de datos de tarjeta
             valida sólo si está marcada este medio de pago
         */
-        
-        
         if(!this.chkTarjeta.isSelected()){
             // en caso de no ser este medio de pago evita hacer todas las validaciones
             return false;
         }
         
         
-        // valida que la tarjeta no este vencida
-        Date fechaVencimiento = this.ParseFecha(txtVencimientoTarjeta.getText().trim());
+        // valida que el número de tarjeta realmente sea un número
+        double nroTarjeta = 0;
+        try {
+            nroTarjeta = Double.valueOf(txtNroTarjeta.getText());
+        }
+        catch(NumberFormatException e){
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Formato de número de tarjeta invalido");
+            a.showAndWait();
+            return false;
+        }
         
+        // que el número de tarjeta no sea número negativo
+        if (nroTarjeta <= 0 || txtNroTarjeta.getText().length() != 12) {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Número de tarjeta invalido");
+            a.showAndWait();
+            return false;
+        }
+        
+        
+        // valida que la tarjeta no este vencida
+        if (txtVencimientoTarjeta.getText().toString().isEmpty()) {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Fecha vencimiento no ingresada");
+            a.showAndWait();
+            return false;
+        }
+        Date fechaVencimiento = this.ParseFecha(txtVencimientoTarjeta.getText().trim());
+        if (fechaVencimiento == null) return false;
         if (fechaVencimiento.before(Date.from(Instant.now()))) {
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
@@ -208,36 +238,21 @@ public class DE_pantallController implements Initializable {
         }
 
 
-        // valida que el número de tarjeta realmente sea un número
-        int nroTarjeta = 0;
-        try {
-            nroTarjeta = Integer.parseInt(txtNroTarjeta.getText());
-        }
-        catch(NumberFormatException e){
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setTitle("Error");
-            a.setHeaderText("Formato de número de tarjeta invalido");
-            a.showAndWait();
-        }
-        
-        // que el número de tarjeta no sea número negativo
-        if (nroTarjeta <= 0) {
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setTitle("Error");
-            a.setHeaderText("Número de tarjeta invalido");
-            a.showAndWait();
-        }
-        
         // que se haya cargado el titular de la tarjeta
         if (txtTitularTarjeta.getText().isEmpty()) {
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
             a.setHeaderText("Falta cargar el nombre impreso en la tarjeta");
             a.showAndWait();
+            return false;
         }
         
+        
+        
+        
+        
         // valida que el código de seguridad (número de 3 o 4 dígitos)
-        if (!(txtCodTarjeta.getText().length() == 3) || !(txtCodTarjeta.getText().length() == 4)) {
+        if (!(txtCodTarjeta.getText().length() == 3) && !(txtCodTarjeta.getText().length() == 4)) {
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
             a.setHeaderText("Código de seguridad de tarjeta invalido");
@@ -269,16 +284,29 @@ public class DE_pantallController implements Initializable {
             método que transforma un string tipo "MM/AAAA" al tipo Date
             utilizado para validar que la tarjeta no esté vencida
         */
+        StringTokenizer st = new StringTokenizer(fecha,"/");
+        int mes = 0;
+        mes = Integer.parseInt((String) st.nextElement());
+        if(mes > 12 || mes < 1){ 
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Fecha de vencimiento no válida");
+            a.showAndWait();
+            return null;
+        
+        }
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
-        try {
-            date = formato.parse("01/"+fecha);
+        try {            
+            date = formato.parse("01/"+fecha);        
+            System.out.println(date);
+
         } 
         catch (ParseException ex) 
         {
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
-            a.setHeaderText("Formato de fecha incorrecto");
+            a.setHeaderText("Formato de fecha de vencimiento incorrecto");
             a.showAndWait();
         }
         return date;
@@ -323,7 +351,7 @@ public class DE_pantallController implements Initializable {
         
         // valida que la fecha de entrega seleccionada sea igual o posterior
         // a la actual
-        if(fechaEntrega.getValue().isBefore(LocalDate.now())){
+       if(fechaEntrega.getValue().isBefore(LocalDate.now())){
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
             a.setHeaderText("La fecha de entrega no debe ser anterior a la actual");
@@ -336,7 +364,10 @@ public class DE_pantallController implements Initializable {
         // hora actual
         if(fechaEntrega.getValue().isEqual(LocalDate.now()) && cmbHoraEntrega.getValue() != "Lo antes posible"){
             Date fechaHora = new Date();
-            if(Integer.parseInt(cmbHoraEntrega.getValue()) <= fechaHora.getHours()){
+            StringTokenizer st = new StringTokenizer(cmbHoraEntrega.getValue().toString(),":");
+            int horaEntrega = 0;
+            horaEntrega = Integer.parseInt((String) st.nextElement());
+            if(horaEntrega <= fechaHora.getHours()){
                 Alert a = new Alert(Alert.AlertType.ERROR);
                 a.setTitle("Error");
                 a.setHeaderText("La hora de entrega no debe ser menor que la hora actual");
@@ -362,8 +393,7 @@ public class DE_pantallController implements Initializable {
         /*
             valida el campo necesario para el medio de pago en efectivo
         */
-        int cantidad = 0; //útilizado como bandera para comprobar el monto positvo
-        
+        float cantidad = 0; //útilizado como bandera para comprobar el monto positvo
         // en caso de no estar seleccionado este medio de pago no valida
         if (!chkEfectivo.isSelected()) {
             return false;
@@ -380,7 +410,14 @@ public class DE_pantallController implements Initializable {
         // valida que realmente se ha ingresado un número positivo
         else{
             try{
-                cantidad = Integer.parseInt(txtEfectivoCantidad.getText().trim());
+                cantidad = Float.valueOf(txtEfectivoCantidad.getText().trim());
+                if(cantidad < total){
+                    Alert a = new Alert(Alert.AlertType.ERROR);
+                    a.setTitle("Error");
+                    a.setHeaderText("Debe ingresar un dinero mayor o igual al total a pagar");
+                    a.showAndWait();
+                    return false;
+                }
             }
             catch(NumberFormatException e){
                 Alert a = new Alert(Alert.AlertType.ERROR);
@@ -409,7 +446,7 @@ public class DE_pantallController implements Initializable {
             if(this.validateCash() || this.validateCard()){
                 Alert a = new Alert(Alert.AlertType.INFORMATION);
                 a.setTitle("Exito");
-                a.setHeaderText("Su pedido se ha realizado correctamenta");
+                a.setHeaderText("Su pedido se ha realizado correctamente");
                 a.showAndWait();
             }
         }
@@ -447,7 +484,6 @@ public class DE_pantallController implements Initializable {
         }
     */
 
-    @FXML
     private void cambiarVuelto(KeyEvent event) {
         
         if (txtEfectivoCantidad.getText().isEmpty()) {
@@ -485,6 +521,15 @@ public class DE_pantallController implements Initializable {
     @FXML
     private void changeStateMonto(InputMethodEvent event) {
         
+    }
+
+    @FXML
+    private void change(ActionEvent event) {
+        if (txtEfectivoCantidad.getText().isEmpty()) return;
+        float pago = Float.valueOf(txtEfectivoCantidad.getText());
+        double vuelto = pago - this.total;
+        if (vuelto <= 0) return;
+        lblVuelto.setText("Su vuelto: " + String.valueOf(vuelto) + "$");
     }
     
     

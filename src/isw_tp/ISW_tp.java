@@ -27,6 +27,7 @@ public class ISW_tp extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("DE_pantall.fxml"));
        
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("DE_style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
         

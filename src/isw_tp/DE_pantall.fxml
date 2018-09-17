@@ -14,50 +14,28 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="900.0" prefWidth="1128.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="isw_tp.DE_pantallController">
+<AnchorPane id="AnchorPane" prefHeight="672.0" prefWidth="987.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="isw_tp.DE_pantallController">
    <children>
-      <TableView fx:id="tbPedidos" layoutX="229.0" layoutY="71.0" prefHeight="200.0" prefWidth="671.0">
+      <TableView fx:id="tbPedidos" layoutX="37.0" layoutY="76.0" prefHeight="157.0" prefWidth="565.0">
         <columns>
-          <TableColumn fx:id="columnArticulo" prefWidth="419.0" text="Articulo" />
-          <TableColumn fx:id="columnCantidad" minWidth="0.0" prefWidth="106.0" text="Cantidad" />
-            <TableColumn fx:id="columnSubtotal" prefWidth="145.0" text="Subtotal" />
+          <TableColumn fx:id="columnArticulo" prefWidth="275.0" text="Articulo" />
+          <TableColumn fx:id="columnCantidad" minWidth="0.0" prefWidth="105.0" text="Cantidad" />
+            <TableColumn fx:id="columnSubtotal" prefWidth="290.0" text="Subtotal" />
         </columns>
       </TableView>
-      <Label layoutX="202.0" layoutY="471.0" text="Fecha de entrega:">
+      <Label layoutX="637.0" layoutY="76.0" text="Fecha de entrega:">
          <font>
             <Font size="19.0" />
          </font>
       </Label>
-      <Label layoutX="637.0" layoutY="469.0" prefHeight="29.0" prefWidth="174.0" text="Hora de entrega:">
+      <Label layoutX="633.0" layoutY="140.0" prefHeight="29.0" prefWidth="174.0" text="Hora de entrega:">
          <font>
             <Font size="19.0" />
          </font>
       </Label>
-      <DatePicker fx:id="fechaEntrega" layoutX="426.0" layoutY="470.0" prefHeight="26.0" prefWidth="151.0" />
-      <ComboBox fx:id="cmbHoraEntrega" layoutX="830.0" layoutY="470.0" prefHeight="26.0" prefWidth="174.0" promptText="Lo antes posible" />
-      <CheckBox fx:id="chkEfectivo" layoutX="223.0" layoutY="565.0" mnemonicParsing="false" onAction="#changeStateEfectivo" text="Efectivo" />
-      <CheckBox fx:id="chkTarjeta" layoutX="356.0" layoutY="565.0" mnemonicParsing="false" onAction="#changeStateTarjeta" text="Tarjeta" />
-      <Label layoutX="202.0" layoutY="522.0" text="Medio de pago">
-         <font>
-            <Font size="19.0" />
-         </font>
-      </Label>
-      <Pane fx:id="paneEfectivo" focusTraversable="true" layoutX="174.0" layoutY="583.0" prefHeight="65.0" prefWidth="770.0">
-         <children>
-            <Label fx:id="lblVuelto" layoutX="482.0" layoutY="26.0" text="Su vuelto:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <TextField fx:id="txtEfectivoCantidad" layoutX="273.0" layoutY="23.0" promptText="2" text="2" />
-            <Label layoutX="30.0" layoutY="23.0" text="Ingrese con cuánto pagará:">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-         </children>
-      </Pane>
-      <Pane fx:id="paneTarjeta" layoutX="174.0" layoutY="638.0" prefHeight="186.0" prefWidth="822.0" visible="false">
+      <DatePicker fx:id="fechaEntrega" layoutX="811.0" layoutY="77.0" prefHeight="26.0" prefWidth="151.0" />
+      <ComboBox fx:id="cmbHoraEntrega" layoutX="786.0" layoutY="142.0" prefHeight="26.0" prefWidth="174.0" promptText="Lo antes posible" />
+      <Pane fx:id="paneTarjeta" layoutX="47.0" layoutY="435.0" prefHeight="157.0" prefWidth="812.0" visible="false">
          <children>
             <Label layoutX="27.0" layoutY="96.0" text="Nombre impreso en la tarjeta:">
                <font>
@@ -90,7 +68,22 @@
             <TextField fx:id="txtNroTarjeta" layoutX="194.0" layoutY="14.0" prefHeight="26.0" prefWidth="255.0" />
          </children>
       </Pane>
-      <Pane layoutX="174.0" layoutY="271.0" prefHeight="186.0" prefWidth="770.0">
+      <Pane fx:id="paneEfectivo" focusTraversable="true" layoutX="30.0" layoutY="435.0" prefHeight="65.0" prefWidth="770.0" visible="false">
+         <children>
+            <TextField fx:id="txtEfectivoCantidad" layoutX="405.0" layoutY="22.0" onAction="#change" />
+            <Label fx:id="lblVuelto" layoutX="578.0" layoutY="23.0" text="Su vuelto:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label layoutX="30.0" layoutY="23.0" text="Ingrese con cuánto pagará(luego presione enter):">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Pane layoutX="26.0" layoutY="249.0" prefHeight="186.0" prefWidth="630.0">
          <children>
             <Label layoutX="76.0" layoutY="14.0" text="Direccion de entrega:">
                <font>
@@ -121,14 +114,26 @@
                </font>
             </Label>
             <TextField fx:id="txtDepto" layoutX="463.0" layoutY="102.0" prefHeight="24.0" prefWidth="123.0" />
+            <Label layoutX="76.0" layoutY="134.0" text="Medio de pago">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <CheckBox fx:id="chkEfectivo" layoutX="16.0" layoutY="162.0" mnemonicParsing="false" onAction="#changeStateEfectivo" text="Efectivo" />
+            <CheckBox fx:id="chkTarjeta" layoutX="151.0" layoutY="164.0" mnemonicParsing="false" onAction="#changeStateTarjeta" text="Tarjeta" />
          </children>
       </Pane>
-      <Button fx:id="btnConfirmar" layoutX="327.0" layoutY="838.0" mnemonicParsing="false" onAction="#confirmation" prefHeight="44.0" prefWidth="289.0" text="Confirmar" />
-      <Button fx:id="btnCancelar" layoutX="633.0" layoutY="838.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="91.0" text="Cancelar" />
-      <Label fx:id="FechaHoraActual" layoutX="968.0" layoutY="14.0" />
-      <Label fx:id="lblTotal" layoutX="816.0" layoutY="830.0" text="Total:">
+      <Button fx:id="btnConfirmar" layoutX="141.0" layoutY="618.0" mnemonicParsing="false" onAction="#confirmation" prefHeight="44.0" prefWidth="289.0" text="Confirmar" />
+      <Button fx:id="btnCancelar" layoutX="480.0" layoutY="618.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="91.0" text="Cancelar" />
+      <Label fx:id="fechaHoraActual" layoutX="813.0" layoutY="14.0" prefHeight="17.0" prefWidth="165.0" text="Fecha Actual: " />
+      <Label fx:id="lblTotal" layoutX="632.0" layoutY="627.0" text="Total:">
          <font>
             <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="388.0" layoutY="11.0" text="Registrar Pedido">
+         <font>
+            <Font name="Calibri" size="33.0" />
          </font>
       </Label>
    </children>
