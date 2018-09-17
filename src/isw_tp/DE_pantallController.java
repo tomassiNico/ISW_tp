@@ -7,7 +7,11 @@ package isw_tp;
 
 import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -25,6 +29,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 
 /**
@@ -39,6 +45,9 @@ public class DE_pantallController implements Initializable {
     DE_DetallePedido dp2 = new DE_DetallePedido(new DE_Articulo("Termo 1L", 100), 1);
     DE_DetallePedido dp3 = new DE_DetallePedido(new DE_Articulo("Guantes Negros Lana", 80), 3);
     DE_DetallePedido dp4 = new DE_DetallePedido(new DE_Articulo("Pasamontaña Negro", 100), 2);
+    private ArrayList<DE_DetallePedido> pedido;
+    
+    private float total;
     
     @FXML
     private TableView<DE_DetallePedido> tbPedidos;
@@ -86,13 +95,22 @@ public class DE_pantallController implements Initializable {
     private Label FechaHoraActual;
     @FXML
     private Label lblTotal;
+    @FXML
+    private Label lblVuelto;
 
     /**
      * Initializes the controller class.
      */
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        /*
+            harcodeo de articulos. Cuando el sistema esté completo 
+            estos deberían ser los artículos seleccionados en el carrito de 
+            compras. Además se cargan los horarios posibles de entrega, se supone
+            que sólo se realizan entregas entre las 9 hs y las 21 hs.
+        */
         columnArticulo.setCellValueFactory(new PropertyValueFactory("articulo"));
         columnCantidad.setCellValueFactory(new PropertyValueFactory("cantidad"));
         columnSubtotal.setCellValueFactory(new PropertyValueFactory("subtotal"));
@@ -119,11 +137,21 @@ public class DE_pantallController implements Initializable {
             "21:00"
             );
         cmbHoraEntrega.setValue("Lo antes posible");
+        total = 0;
+        for (int i = 0; i < detallesPedidos.size() ; i++) {
+            total += detallesPedidos.get(i).getSubtotal();
+        }
+        lblTotal.setText("Total: " + total + "$");
         
     }    
 
+    
+    
     @FXML
     private void changeStateEfectivo(ActionEvent event) {
+        /*
+            habilita los campos necesarios del pago con efectivo 
+        */
         if (chkEfectivo.isSelected()){
             chkTarjeta.setSelected(false);
             paneEfectivo.setVisible(true);
@@ -135,8 +163,14 @@ public class DE_pantallController implements Initializable {
         
     }
 
+    
+    
     @FXML
     private void changeStateTarjeta(ActionEvent event) {
+        /*
+            habilita los campos necesarios del pago con tarjeta 
+        */
+        
         if (chkTarjeta.isSelected()){
             chkEfectivo.setSelected(false);
             paneTarjeta.setVisible(true);
@@ -147,11 +181,118 @@ public class DE_pantallController implements Initializable {
         }
     }
     
-    private boolean validateCard(){
-        return false;
     
+    
+    private boolean validateCard(){
+        /*
+            validación de datos de tarjeta
+            valida sólo si está marcada este medio de pago
+        */
+        
+        
+        if(!this.chkTarjeta.isSelected()){
+            // en caso de no ser este medio de pago evita hacer todas las validaciones
+            return false;
+        }
+        
+        
+        // valida que la tarjeta no este vencida
+        Date fechaVencimiento = this.ParseFecha(txtVencimientoTarjeta.getText().trim());
+        
+        if (fechaVencimiento.before(Date.from(Instant.now()))) {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Tarjeta vencida");
+            a.showAndWait();
+            return false;
+        }
+
+
+        // valida que el número de tarjeta realmente sea un número
+        int nroTarjeta = 0;
+        try {
+            nroTarjeta = Integer.parseInt(txtNroTarjeta.getText());
+        }
+        catch(NumberFormatException e){
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Formato de número de tarjeta invalido");
+            a.showAndWait();
+        }
+        
+        // que el número de tarjeta no sea número negativo
+        if (nroTarjeta <= 0) {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Número de tarjeta invalido");
+            a.showAndWait();
+        }
+        
+        // que se haya cargado el titular de la tarjeta
+        if (txtTitularTarjeta.getText().isEmpty()) {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Falta cargar el nombre impreso en la tarjeta");
+            a.showAndWait();
+        }
+        
+        // valida que el código de seguridad (número de 3 o 4 dígitos)
+        if (!(txtCodTarjeta.getText().length() == 3) || !(txtCodTarjeta.getText().length() == 4)) {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Código de seguridad de tarjeta invalido");
+            a.showAndWait();
+            return false;
+        }
+        else{
+            // que realmente sea un número
+            try {
+                Integer.parseInt(txtCodTarjeta.getText());
+            }
+            catch(NumberFormatException e){
+                Alert a = new Alert(Alert.AlertType.ERROR);
+                a.setTitle("Error");
+                a.setHeaderText("Código de seguridad de tarjeta invalido");
+                a.showAndWait();
+                return false;
+            }
+        }
+        
+        return true;
     }
+    
+    
+    
+    private Date ParseFecha(String fecha)
+    {
+        /*
+            método que transforma un string tipo "MM/AAAA" al tipo Date
+            utilizado para validar que la tarjeta no esté vencida
+        */
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = null;
+        try {
+            date = formato.parse("01/"+fecha);
+        } 
+        catch (ParseException ex) 
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Formato de fecha incorrecto");
+            a.showAndWait();
+        }
+        return date;
+    }
+
+
+    
     private boolean validateData(){
+        /*
+            validación de los datos necesarios del pedido. Se los valida
+            independientemente del medio de pago seleccionado
+        */
+        
+        // validacion de calle de entrega del pedido
         if (txtCalle.getText().isEmpty()){
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
@@ -159,6 +300,8 @@ public class DE_pantallController implements Initializable {
             a.showAndWait();
             return false;
         }
+        
+        // validación de nro de calle de entrega del pedido
         if (txtCalleNro.getText().isEmpty()){
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
@@ -166,6 +309,10 @@ public class DE_pantallController implements Initializable {
             a.showAndWait();
             return false;
         }
+        
+        // en caso de cargar el depto (ej: a) debe cargar en qué piso está el
+        // mismo. Permite cargar solamente el piso SIN cargar el depto, pero no
+        // viceversa
         if (!txtDepto.getText().isEmpty() && txtPiso.getText().isEmpty()){
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
@@ -173,14 +320,21 @@ public class DE_pantallController implements Initializable {
             a.showAndWait();
             return false;
         }
-        if(fechaEntrega.getValue().compareTo(LocalDate.now()) < 0){
+        
+        // valida que la fecha de entrega seleccionada sea igual o posterior
+        // a la actual
+        if(fechaEntrega.getValue().isBefore(LocalDate.now())){
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
             a.setHeaderText("La fecha de entrega no debe ser anterior a la actual");
             a.showAndWait();
             return false;
         }
-        if(fechaEntrega.getValue().compareTo(LocalDate.now()) == 0){
+        
+        // en caso de seleccionar la entrega para la fecha actual que la hora
+        // de entrega seleccionada sea "Lo antes posible" o posterior a la 
+        // hora actual
+        if(fechaEntrega.getValue().isEqual(LocalDate.now()) && cmbHoraEntrega.getValue() != "Lo antes posible"){
             Date fechaHora = new Date();
             if(Integer.parseInt(cmbHoraEntrega.getValue()) <= fechaHora.getHours()){
                 Alert a = new Alert(Alert.AlertType.ERROR);
@@ -190,6 +344,8 @@ public class DE_pantallController implements Initializable {
                 return false;
             }
         }
+        
+        // valida que se ha seleccionado un medio de pago
         if(!chkEfectivo.isSelected() && !chkTarjeta.isSelected()){
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
@@ -203,8 +359,48 @@ public class DE_pantallController implements Initializable {
     
     }
     private boolean validateCash(){
-        return false;
+        /*
+            valida el campo necesario para el medio de pago en efectivo
+        */
+        int cantidad = 0; //útilizado como bandera para comprobar el monto positvo
         
+        // en caso de no estar seleccionado este medio de pago no valida
+        if (!chkEfectivo.isSelected()) {
+            return false;
+        }
+        
+        // valida que se ha cargado la cantidad con que se pagará
+        if (txtEfectivoCantidad.getText().isEmpty()) {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("Debe indicar con cuanto pagará");
+            a.showAndWait();
+            return false;
+        }
+        // valida que realmente se ha ingresado un número positivo
+        else{
+            try{
+                cantidad = Integer.parseInt(txtEfectivoCantidad.getText().trim());
+            }
+            catch(NumberFormatException e){
+                Alert a = new Alert(Alert.AlertType.ERROR);
+                a.setTitle("Error");
+                a.setHeaderText("Cantidad con la que pagará invalida");
+                a.showAndWait();
+                return false;
+            }
+        }
+        
+        // valida que no sea una cantidad negativa
+        if (cantidad <= 0) {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Error");
+            a.setHeaderText("El monto con el cual pagará debe ser positivo");
+            a.showAndWait();
+            return false;
+        }
+        
+        return true;
     }
 
     @FXML
@@ -219,4 +415,84 @@ public class DE_pantallController implements Initializable {
         }
         
     }
+
+    
+    
+    /*
+    String monto = txtEfectivoCantidad.getText();
+        String ultimoCaracter = monto.substring(monto.length() - 1);
+        
+        
+        try{
+            Integer.parseInt(ultimoCaracter);
+        }
+        catch(NumberFormatException e){
+            if (monto.length() == 1) {
+                txtEfectivoCantidad.setText(monto);
+            }
+            else{
+                monto = monto.substring(0, monto.length()-2);
+                txtEfectivoCantidad.setText(monto);
+            }
+            return;
+        }
+        
+        
+        float vuelto = Float.parseFloat(monto) - total;
+        if (vuelto <= 0) {
+            lblVuelto.setText("Su vuelto: 0$");
+        }
+        else{
+           lblVuelto.setText(String.valueOf(vuelto));
+        }
+    */
+
+    @FXML
+    private void cambiarVuelto(KeyEvent event) {
+        
+        if (txtEfectivoCantidad.getText().isEmpty()) {
+            return;
+        }
+        
+        String monto = txtEfectivoCantidad.getText();
+        String ultimoCaracter = monto.substring(monto.length() - 1);
+        
+        
+        try{
+            Integer.parseInt(ultimoCaracter);
+        }
+        catch(NumberFormatException e){
+            if (monto.length() == 1) {
+                txtEfectivoCantidad.setText(monto);
+            }
+            else{
+                monto = monto.substring(0, monto.length()-2);
+                txtEfectivoCantidad.setText(monto);
+            }
+            return;
+        }
+        
+        
+        float vuelto = Float.parseFloat(monto) - total;
+        if (vuelto <= 0) {
+            lblVuelto.setText("Su vuelto: 0$");
+        }
+        else{
+           lblVuelto.setText(String.valueOf(vuelto));
+        }
+    }
+
+    @FXML
+    private void changeStateMonto(InputMethodEvent event) {
+        
+    }
+    
+    
+    
+
+    
+
+    
+
+    
 }
