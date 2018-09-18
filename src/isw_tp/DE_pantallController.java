@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package isw_tp;
 
 import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
@@ -33,21 +28,23 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
  *
  * @author aleex
  */
+
 public class DE_pantallController implements Initializable {
     //Se harckodean detalles pedidos para ser ingresados en la tabla
     //En el programa final deberian ser los incluidos en el carrito de compras
+
     DE_DetallePedido dp1 = new DE_DetallePedido(new DE_Articulo("Vazo termico 500ml", 200), 5);
     DE_DetallePedido dp2 = new DE_DetallePedido(new DE_Articulo("Termo 1L", 100), 1);
     DE_DetallePedido dp3 = new DE_DetallePedido(new DE_Articulo("Guantes Negros Lana", 80), 3);
     DE_DetallePedido dp4 = new DE_DetallePedido(new DE_Articulo("Pasamontaña Negro", 100), 2);
-    private ArrayList<DE_DetallePedido> pedido;
-    
+
     private float total;
     
     @FXML
@@ -99,9 +96,6 @@ public class DE_pantallController implements Initializable {
     @FXML
     private Label fechaHoraActual;
 
-    /**
-     * Initializes the controller class.
-     */
     
     
     @Override
@@ -112,15 +106,16 @@ public class DE_pantallController implements Initializable {
             compras. Además se cargan los horarios posibles de entrega, se supone
             que sólo se realizan entregas entre las 9 hs y las 21 hs.
         */
+
         columnArticulo.setCellValueFactory(new PropertyValueFactory("articulo"));
         columnCantidad.setCellValueFactory(new PropertyValueFactory("cantidad"));
         columnSubtotal.setCellValueFactory(new PropertyValueFactory("subtotal"));
-        ObservableList<DE_DetallePedido> detallesPedidos = FXCollections.observableArrayList();
-        detallesPedidos.add(dp1);
-        detallesPedidos.add(dp2);
-        detallesPedidos.add(dp3);
-        detallesPedidos.add(dp4);
-        tbPedidos.setItems(detallesPedidos);
+        ObservableList<DE_DetallePedido> pedido = FXCollections.observableArrayList();
+        pedido.add(dp1);
+        pedido.add(dp2);
+        pedido.add(dp3);
+        pedido.add(dp4);
+        tbPedidos.setItems(pedido);
         cmbHoraEntrega.getItems().addAll( 
             "Lo antes posible",
             "9:00",
@@ -139,8 +134,8 @@ public class DE_pantallController implements Initializable {
             );
         cmbHoraEntrega.setValue("Lo antes posible");
         total = 0;
-        for (int i = 0; i < detallesPedidos.size() ; i++) {
-            total += detallesPedidos.get(i).getSubtotal();
+        for (int i = 0; i < pedido.size() ; i++) {
+            total += pedido.get(i).getSubtotal();
         }
         lblTotal.setText("Total: " + total + "$");
         fechaHoraActual.setText(fechaHoraActual.getText().toString() + LocalDate.now().toString());
@@ -154,6 +149,7 @@ public class DE_pantallController implements Initializable {
         /*
             habilita los campos necesarios del pago con efectivo 
         */
+
         if (chkEfectivo.isSelected()){
             chkTarjeta.setSelected(false);
             paneEfectivo.setVisible(true);
@@ -190,11 +186,11 @@ public class DE_pantallController implements Initializable {
             validación de datos de tarjeta
             valida sólo si está marcada este medio de pago
         */
+
         if(!this.chkTarjeta.isSelected()){
             // en caso de no ser este medio de pago evita hacer todas las validaciones
             return false;
         }
-        
         
         // valida que el número de tarjeta realmente sea un número
         double nroTarjeta = 0;
@@ -227,8 +223,11 @@ public class DE_pantallController implements Initializable {
             a.showAndWait();
             return false;
         }
+
         Date fechaVencimiento = this.ParseFecha(txtVencimientoTarjeta.getText().trim());
+
         if (fechaVencimiento == null) return false;
+
         if (fechaVencimiento.before(Date.from(Instant.now()))) {
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
@@ -246,10 +245,6 @@ public class DE_pantallController implements Initializable {
             a.showAndWait();
             return false;
         }
-        
-        
-        
-        
         
         // valida que el código de seguridad (número de 3 o 4 dígitos)
         if (!(txtCodTarjeta.getText().length() == 3) && !(txtCodTarjeta.getText().length() == 4)) {
@@ -284,9 +279,12 @@ public class DE_pantallController implements Initializable {
             método que transforma un string tipo "MM/AAAA" al tipo Date
             utilizado para validar que la tarjeta no esté vencida
         */
+        
         StringTokenizer st = new StringTokenizer(fecha,"/");
         int mes = 0;
         mes = Integer.parseInt((String) st.nextElement());
+        
+        // valida que se ha ingresado un mes válido
         if(mes > 12 || mes < 1){ 
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
@@ -295,12 +293,13 @@ public class DE_pantallController implements Initializable {
             return null;
         
         }
+        
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
+        
+        // conversion a tipo date
         try {            
             date = formato.parse("01/"+fecha);        
-            System.out.println(date);
-
         } 
         catch (ParseException ex) 
         {
@@ -351,7 +350,7 @@ public class DE_pantallController implements Initializable {
         
         // valida que la fecha de entrega seleccionada sea igual o posterior
         // a la actual
-       if(fechaEntrega.getValue().isBefore(LocalDate.now())){
+        if(fechaEntrega.getValue().isBefore(LocalDate.now())){
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Error");
             a.setHeaderText("La fecha de entrega no debe ser anterior a la actual");
@@ -393,7 +392,9 @@ public class DE_pantallController implements Initializable {
         /*
             valida el campo necesario para el medio de pago en efectivo
         */
+        
         float cantidad = 0; //útilizado como bandera para comprobar el monto positvo
+        
         // en caso de no estar seleccionado este medio de pago no valida
         if (!chkEfectivo.isSelected()) {
             return false;
@@ -442,102 +443,44 @@ public class DE_pantallController implements Initializable {
 
     @FXML
     private void confirmation(ActionEvent event) {
+        /*
+            desencadena las validaciones de los datos
+        */
         if (this.validateData()){
             if(this.validateCash() || this.validateCard()){
                 Alert a = new Alert(Alert.AlertType.INFORMATION);
                 a.setTitle("Exito");
                 a.setHeaderText("Su pedido se ha realizado correctamente");
                 a.showAndWait();
+                Stage stage = (Stage) btnConfirmar.getScene().getWindow();
+                stage.close();
             }
         }
         
     }
 
-    
-    
-    /*
-    String monto = txtEfectivoCantidad.getText();
-        String ultimoCaracter = monto.substring(monto.length() - 1);
-        
-        
-        try{
-            Integer.parseInt(ultimoCaracter);
-        }
-        catch(NumberFormatException e){
-            if (monto.length() == 1) {
-                txtEfectivoCantidad.setText(monto);
-            }
-            else{
-                monto = monto.substring(0, monto.length()-2);
-                txtEfectivoCantidad.setText(monto);
-            }
-            return;
-        }
-        
-        
-        float vuelto = Float.parseFloat(monto) - total;
-        if (vuelto <= 0) {
-            lblVuelto.setText("Su vuelto: 0$");
-        }
-        else{
-           lblVuelto.setText(String.valueOf(vuelto));
-        }
-    */
-
-    private void cambiarVuelto(KeyEvent event) {
-        
-        if (txtEfectivoCantidad.getText().isEmpty()) {
-            return;
-        }
-        
-        String monto = txtEfectivoCantidad.getText();
-        String ultimoCaracter = monto.substring(monto.length() - 1);
-        
-        
-        try{
-            Integer.parseInt(ultimoCaracter);
-        }
-        catch(NumberFormatException e){
-            if (monto.length() == 1) {
-                txtEfectivoCantidad.setText(monto);
-            }
-            else{
-                monto = monto.substring(0, monto.length()-2);
-                txtEfectivoCantidad.setText(monto);
-            }
-            return;
-        }
-        
-        
-        float vuelto = Float.parseFloat(monto) - total;
-        if (vuelto <= 0) {
-            lblVuelto.setText("Su vuelto: 0$");
-        }
-        else{
-           lblVuelto.setText(String.valueOf(vuelto));
-        }
-    }
-
-    @FXML
-    private void changeStateMonto(InputMethodEvent event) {
-        
-    }
 
     @FXML
     private void change(ActionEvent event) {
+        /*
+            calcula el vuelto en caso de seleccionar medio de pago efectivo
+        */
         if (txtEfectivoCantidad.getText().isEmpty()) return;
         float pago = Float.valueOf(txtEfectivoCantidad.getText());
         double vuelto = pago - this.total;
         if (vuelto <= 0) return;
         lblVuelto.setText("Su vuelto: " + String.valueOf(vuelto) + "$");
     }
-    
-    
-    
 
     
-
-    
+    @FXML
+    private void close(ActionEvent event) {
+        /*
+            cierra la ventana
+        */
+        Stage stage = (Stage) btnCancelar.getScene().getWindow();
+        stage.close();
+    }
 
     
 }

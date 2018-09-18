@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="672.0" prefWidth="987.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="isw_tp.DE_pantallController">
+<AnchorPane id="AnchorPane" prefHeight="672.0" prefWidth="987.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="isw_tp.DE_pantallController">
    <children>
       <TableView fx:id="tbPedidos" layoutX="37.0" layoutY="76.0" prefHeight="157.0" prefWidth="565.0">
         <columns>
@@ -70,8 +70,8 @@
       </Pane>
       <Pane fx:id="paneEfectivo" focusTraversable="true" layoutX="30.0" layoutY="435.0" prefHeight="65.0" prefWidth="770.0" visible="false">
          <children>
-            <TextField fx:id="txtEfectivoCantidad" layoutX="405.0" layoutY="22.0" onAction="#change" />
-            <Label fx:id="lblVuelto" layoutX="578.0" layoutY="23.0" text="Su vuelto:">
+            <TextField fx:id="txtEfectivoCantidad" layoutX="447.0" layoutY="20.0" onAction="#change" prefHeight="26.0" prefWidth="129.0" />
+            <Label fx:id="lblVuelto" layoutX="600.0" layoutY="23.0" text="Su vuelto:">
                <font>
                   <Font size="16.0" />
                </font>
@@ -101,7 +101,7 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <TextField fx:id="txtCalleNro" layoutX="483.0" layoutY="59.0" onInputMethodTextChanged="#changeStateMonto" prefHeight="26.0" prefWidth="141.0" />
+            <TextField fx:id="txtCalleNro" layoutX="483.0" layoutY="59.0" prefHeight="26.0" prefWidth="141.0" />
             <Label layoutX="30.0" layoutY="105.0" text="Piso (opcional):">
                <font>
                   <Font size="16.0" />
@@ -124,14 +124,14 @@
          </children>
       </Pane>
       <Button fx:id="btnConfirmar" layoutX="141.0" layoutY="618.0" mnemonicParsing="false" onAction="#confirmation" prefHeight="44.0" prefWidth="289.0" text="Confirmar" />
-      <Button fx:id="btnCancelar" layoutX="480.0" layoutY="618.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="91.0" text="Cancelar" />
+      <Button fx:id="btnCancelar" layoutX="480.0" layoutY="618.0" mnemonicParsing="false" onAction="#close" prefHeight="44.0" prefWidth="91.0" text="Cancelar" />
       <Label fx:id="fechaHoraActual" layoutX="813.0" layoutY="14.0" prefHeight="17.0" prefWidth="165.0" text="Fecha Actual: " />
       <Label fx:id="lblTotal" layoutX="632.0" layoutY="627.0" text="Total:">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Label layoutX="388.0" layoutY="11.0" text="Registrar Pedido">
+      <Label layoutX="154.0" layoutY="11.0" text="Realizar pedido a comercio adherido">
          <font>
             <Font name="Calibri" size="33.0" />
          </font>
