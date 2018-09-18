@@ -24,7 +24,7 @@ public class ISW_tp extends Application {
     
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("DE_pantall.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("DE_pedidoComercioAdherido.fxml"));
        
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("DE_style.css").toExternalForm());

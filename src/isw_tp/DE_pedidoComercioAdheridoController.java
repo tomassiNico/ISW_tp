@@ -1,12 +1,10 @@
 package isw_tp;
 
-import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
@@ -25,19 +23,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
  * FXML Controller class
  *
- * @author aleex
+ * @author nicolastomassi
  */
+public class DE_pedidoComercioAdheridoController implements Initializable {
 
-public class DE_pantallController implements Initializable {
-    //Se harckodean detalles pedidos para ser ingresados en la tabla
+     //Se harckodean detalles pedidos para ser ingresados en la tabla
     //En el programa final deberian ser los incluidos en el carrito de compras
 
     DE_DetallePedido dp1 = new DE_DetallePedido(new DE_Articulo("Vazo termico 500ml", 200), 5);
@@ -481,6 +477,5 @@ public class DE_pantallController implements Initializable {
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
-
     
 }

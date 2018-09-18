@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="672.0" prefWidth="987.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="isw_tp.DE_pantallController">
+<AnchorPane id="AnchorPane" prefHeight="672.0" prefWidth="987.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="isw_tp.DE_pedidoComercioAdheridoController">
    <children>
       <TableView fx:id="tbPedidos" layoutX="37.0" layoutY="76.0" prefHeight="157.0" prefWidth="565.0">
         <columns>
