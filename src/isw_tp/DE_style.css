@@ -16,6 +16,9 @@ and open the template in the editor.
     -fx-border-color: rgb(216, 216, 216);
 }
 
-#paneEfectivo #paneTarjeta{
-    -fx-border-color: black;
+#paneEfectivo, #paneTarjeta, #pane{
+    -fx-border-color: #03a9f4;
+}
+#AnchorPane {
+    -fx-background-color: #ffffff;
 }
